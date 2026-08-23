@@ -1,0 +1,63 @@
+{
+    "name": "the6fallenangel/variza-laravel",
+    "description": "Laravel package for Variza payment gateway — create payment links and handle webhooks with Laravel-native events.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "variza",
+        "payment",
+        "card-to-card",
+        "payment-link",
+        "webhook",
+        "payment-gateway"
+    ],
+    "authors": [
+        {
+            "name": "Ali",
+            "email": "ali@variza.ir"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "illuminate/support": "^13.0",
+        "illuminate/http": "^13.0",
+        "illuminate/contracts": "^13.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "The6FallenAngel\\VarizaLaravel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "The6FallenAngel\\VarizaLaravel\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "The6FallenAngel\\VarizaLaravel\\VarizaServiceProvider"
+            ],
+            "aliases": {
+                "Variza": "The6FallenAngel\\VarizaLaravel\\Facades\\Variza"
+            }
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
