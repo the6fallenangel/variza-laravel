@@ -96,6 +96,7 @@ $paymentLink = Variza::createPaymentLink(new PaymentLinkRequest(
     title: 'Order #123',                               // اختیاری
     cardLast4: '1234',                                 // اختیاری — انتخاب کارت مشخص
     expiresIn: Expiry::OneHour,                        // اختیاری — مدت اعتبار لینک
+    memberPhone: '09123456789',                        // اختیاری — شماره موبایل عضو مارکت‌پلیس
 ));
 
 // انتقال کاربر به صفحه پرداخت
@@ -103,6 +104,8 @@ return redirect($paymentLink->payUrl);
 ```
 
 </div>
+
+> 🏪 **مارکت‌پلیس** — اگر از پلن مارکت‌پلیس استفاده می‌کنید، مالک می‌تواند با ارسال `memberPhone` (شماره `09xxxxxxxxx` عضو ) لینک را به نام آن عضو ایجاد کند. کارت مقصد و محدودیت‌ها مربوط به عضو سنجیده می‌شود ولی اعتبار از مالک کسر و وب‌هوک به آدرس مالک ارسال می‌گردد.
 
 ### استفاده از Dependency Injection
 
@@ -199,6 +202,9 @@ class CompleteOrderPayment
                 'paid_amount' => $payload->amount,
                 'paid_at' => now(),
             ]);
+
+            // اگر پرداخت مربوط به عضو مارکت‌پلیس بوده:
+            // $memberPhone = $payload->memberPhone; // '09123456789' | null
 
             // ارسال ایمیل، پیامک و سایر اقدامات موردنیاز
         }
@@ -403,10 +409,13 @@ $paymentLink = Variza::createPaymentLink(new PaymentLinkRequest(
     returnUrl: route('order.callback'),
     title: 'Order #123',                // optional
     expiresIn: Expiry::OneHour,         // optional
+    memberPhone: '09123456789',         // optional — marketplace team member phone
 ));
 
 return redirect($paymentLink->payUrl);
 ```
+
+> 🏪 **Marketplace** — If you use a marketplace team plan, the owner can pass `memberPhone` (`09xxxxxxxxx` of a member) to create the link on behalf of that member. Destination card and limits are checked against the member, but credit is deducted from the owner and webhook is delivered to owner's `callback_url`.
 
 ### Handle webhook events
 
@@ -434,6 +443,9 @@ class CompleteOrderPayment
                 'payment_code' => $event->payload->attemptCode,
                 'paid_at' => now(),
             ]);
+
+            // if payment was for a marketplace member:
+            // $memberPhone = $event->payload->memberPhone; // '09123456789' | null
         }
     }
 }

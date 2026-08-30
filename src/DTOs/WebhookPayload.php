@@ -17,6 +17,7 @@ final class WebhookPayload
         public readonly int $amount,
         public readonly string $status,
         public readonly string $sentAt,
+        public readonly ?string $memberPhone = null,
     ) {
     }
 
@@ -42,6 +43,7 @@ final class WebhookPayload
             amount: (int) ($data['amount'] ?? 0),
             status: (string) ($data['status'] ?? ''),
             sentAt: (string) ($data['sent_at'] ?? ''),
+            memberPhone: isset($data['member_phone']) && $data['member_phone'] !== null ? (string) $data['member_phone'] : null,
         );
     }
 }

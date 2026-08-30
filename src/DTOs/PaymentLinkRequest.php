@@ -12,6 +12,7 @@ final class PaymentLinkRequest
         public readonly ?string $title = null,
         public readonly ?string $cardLast4 = null,
         public readonly ?Expiry $expiresIn = null,
+        public readonly ?string $memberPhone = null,
     ) {
     }
 
@@ -26,6 +27,7 @@ final class PaymentLinkRequest
             'title' => $this->title,
             'card_last_4' => $this->cardLast4,
             'expires_in' => $this->expiresIn?->value,
+            'member_phone' => $this->memberPhone,
         ], static fn (mixed $value): bool => $value !== null);
     }
 }
