@@ -6,10 +6,17 @@ namespace The6FallenAngel\VarizaLaravel\DTOs;
 
 final class PaymentLinkRequest
 {
+    public const RANDOM_CARD = 'random';
+
     public function __construct(
         public readonly int $amount,
         public readonly string $returnUrl,
         public readonly ?string $title = null,
+        /**
+         * 4 digits of the destination card (e.g. "1234") or self::RANDOM_CARD ("random")
+         * for automatic least-load selection. Requires plan with RandomLeastLoad feature
+         * and at least 2 active cards on the seller account.
+         */
         public readonly ?string $cardLast4 = null,
         public readonly ?Expiry $expiresIn = null,
         public readonly ?string $memberPhone = null,
