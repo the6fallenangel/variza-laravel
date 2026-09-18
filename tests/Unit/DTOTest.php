@@ -43,6 +43,17 @@ test('payment link request filters null values', function () {
         ->not->toHaveKey('expires_in');
 });
 
+test('payment link request supports variza cards settlement', function () {
+    $request = new PaymentLinkRequest(
+        amount: 500000,
+        returnUrl: 'https://example.com/callback',
+        cardLast4: PaymentLinkRequest::VARIZA_CARDS,
+    );
+
+    expect(PaymentLinkRequest::VARIZA_CARDS)->toBe('variza')
+        ->and($request->toArray()['card_last_4'])->toBe('variza');
+});
+
 test('payment link can be created from array', function () {
     $data = fakePaymentLink();
     $paymentLink = PaymentLink::fromArray($data);

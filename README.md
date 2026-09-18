@@ -106,6 +106,13 @@ $paymentLink = Variza::createPaymentLink(new PaymentLinkRequest(
     cardLast4: PaymentLinkRequest::RANDOM_CARD, // or 'random' — pick least-load active card
 ));
 
+// کارت‌های واریزا — تسویه کیف‌پول با تتر
+$paymentLink = Variza::createPaymentLink(new PaymentLinkRequest(
+    amount: 500000,
+    returnUrl: route('order.callback'),
+    cardLast4: PaymentLinkRequest::VARIZA_CARDS, // or 'variza' — buyer pays Variza cards, wallet credited in Toman
+));
+
 // انتقال کاربر به صفحه پرداخت
 return redirect($paymentLink->payUrl);
 ```
@@ -113,6 +120,8 @@ return redirect($paymentLink->payUrl);
 </div>
 
 > 🔀 **توزیع هوشمند بار (کارت تصادفی)** — با ارسال `cardLast4: PaymentLinkRequest::RANDOM_CARD` یا `'random'`، سیستم در لحظه‌ی پرداخت از بین کارت‌های فعال شما، کارتی با کمترین تعداد تراکنش موفق امروز را انتخاب می‌کند (در صورت تساوی، تصادفی). نیازمند اشتراک دارای قابلیت «کارت تصادفی» و حداقل ۲ کارت فعال؛ در غیر این صورت API خطای ۴۲۲ برمی‌گرداند.
+
+> 💼 **کارت‌های واریزا (تسویه کیف‌پول)** — با ارسال `cardLast4: PaymentLinkRequest::VARIZA_CARDS` یا `'variza'`، خریدار به کارت واریزا واریز می‌کند و نیازی به ثبت کارت بانکی ندارید؛ کیف‌پول شما به تومان (پس از کسر کارمزد) شارژ و قابل برداشت به‌صورت تتر (USDT) است. نیازمند اشتراک دارای قابلیت «کارت‌های واریزا» و سقف مبلغ هر لینک ۲٬۰۰۰٬۰۰۰ تومان؛ در غیر این صورت API خطای ۴۲۲ برمی‌گرداند.
 
 > 🏪 **مارکت‌پلیس** — اگر از پلن مارکت‌پلیس استفاده می‌کنید، مالک می‌تواند با ارسال `memberPhone` (شماره `09xxxxxxxxx` عضو ) لینک را به نام آن عضو ایجاد کند. کارت مقصد و محدودیت‌ها مربوط به عضو سنجیده می‌شود ولی اعتبار از مالک کسر و وب‌هوک به آدرس مالک ارسال می‌گردد.
 
@@ -428,10 +437,19 @@ $paymentLink = Variza::createPaymentLink(new PaymentLinkRequest(
     cardLast4: PaymentLinkRequest::RANDOM_CARD, // or 'random' — pick active card with least successful transactions today
 ));
 
+// Variza cards — wallet settlement in Toman, withdrawable as USDT
+$paymentLink = Variza::createPaymentLink(new PaymentLinkRequest(
+    amount: 500000,
+    returnUrl: route('order.callback'),
+    cardLast4: PaymentLinkRequest::VARIZA_CARDS, // or 'variza' — buyer pays Variza cards, no seller bank account needed
+));
+
 return redirect($paymentLink->payUrl);
 ```
 
 > 🔀 **Smart load distribution (random card)** — Pass `cardLast4: PaymentLinkRequest::RANDOM_CARD` or `'random'` to let Variza auto-pick the active card with the fewest successful transactions today (random tie-break). Requires a plan with the Random Card feature and at least 2 active cards; otherwise the API returns 422.
+
+> 💼 **Variza cards (wallet settlement)** — Pass `cardLast4: PaymentLinkRequest::VARIZA_CARDS` or `'variza'` and the buyer pays Variza cards with no seller bank account needed; your wallet is credited in Toman (after fee) and withdrawable as USDT. Requires a plan with the Variza Cards feature, max 2,000,000 Toman per link; otherwise the API returns 422.
 
 > 🏪 **Marketplace** — If you use a marketplace team plan, the owner can pass `memberPhone` (`09xxxxxxxxx` of a member) to create the link on behalf of that member. Destination card and limits are checked against the member, but credit is deducted from the owner and webhook is delivered to owner's `callback_url`.
 
